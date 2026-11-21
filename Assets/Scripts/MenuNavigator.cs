@@ -124,63 +124,86 @@ using UnityEngine.EventSystems;
 
 public class MenuNavigator : MonoBehaviour
 {
-    [SerializeField] GameObject[] screens;      // order = Screen enum order
-    [SerializeField] GameObject[] firstButtons; // first selectable of each screen
+    [SerializeField] GameObject[] screens;
+    [SerializeField] GameObject[] firstButtons;
+
     readonly Stack<int> history = new Stack<int>();
     int current = -1;
     Coroutine running;
 
-    void Start() { Show(0, 0); }
-
-    public void Go(int index)            // forward: new screen slides in from the right
+    void Start()
     {
+        Show(0, 0);
+    }
+
+    public void Go(int index)
+    {
+        if (index < 0 || index >= screens.Length) return;
+        if (current == index) return;
+
         history.Push(current);
-        AudioManager.UI(UISound.Open);   // panel opens
+        AudioManager.UI(UISound.Open);               // panel opens
         Show(index, +1);
     }
 
-    public void Back()                   // back: new screen slides in from the left
+    // Kept from Lab 07 so Btn_Start keeps working. It now uses the loading screen.
+    public void LoadGameScene(string sceneName)
+    {
+        SceneLoader.Load(sceneName);
+    }
+
+    public void Back()
     {
         if (history.Count == 0) return;
-        AudioManager.UI(UISound.Back);   // back / panel closes (button or Escape key)
+        AudioManager.UI(UISound.Back);               // back / panel closes (button or Escape)
         Show(history.Pop(), -1);
     }
 
     void Show(int index, int direction)
     {
         if (running != null) StopCoroutine(running);
+
         for (int i = 0; i < screens.Length; i++)
-            screens[i].SetActive(i == index);       // old screen hides at once
+            screens[i].SetActive(i == index);
 
         current = index;
+
         GameObject s = screens[index];
         CanvasGroup cg = Tween.Group(s.transform);
         RectTransform rt = (RectTransform)s.transform;
 
-        if (direction == 0)                          // first screen: no slide
+        if (direction == 0)
         {
-            cg.alpha = 1f; cg.interactable = true; rt.anchoredPosition = Vector2.zero;
+            cg.alpha = 1f;
+            cg.interactable = true;
+            cg.blocksRaycasts = true;
+            rt.anchoredPosition = Vector2.zero;
             EventSystem.current.SetSelectedGameObject(firstButtons[index]);
             return;
         }
 
         cg.alpha = 0f;
-        cg.interactable = false;                     // no taps while it is moving
+        cg.interactable = false;
+        cg.blocksRaycasts = false;
+
         float startX = 120f * direction;
-        running = Tween.Run(this, 0.30f, Ease.OutCubic, t =>
-        {
-            cg.alpha = Mathf.Clamp01(t);
-            rt.anchoredPosition = new Vector2(Mathf.LerpUnclamped(startX, 0f, t), 0f);
-        },
-        () =>
-        {
-            cg.interactable = true;
-            EventSystem.current.SetSelectedGameObject(firstButtons[index]);
-        });
+
+        running = Tween.Run(this, 0.30f, Ease.OutCubic,
+            t =>
+            {
+                cg.alpha = Mathf.Clamp01(t);
+                rt.anchoredPosition = new Vector2(Mathf.LerpUnclamped(startX, 0f, t), 0f);
+            },
+            () =>
+            {
+                cg.interactable = true;
+                cg.blocksRaycasts = true;
+                EventSystem.current.SetSelectedGameObject(firstButtons[index]);
+            });
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape)) Back();   // Android back button also = Escape
+        if (Input.GetKeyDown(KeyCode.Escape)) Back();
     }
 }
