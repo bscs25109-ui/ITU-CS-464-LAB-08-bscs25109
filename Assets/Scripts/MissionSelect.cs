@@ -29,4 +29,10 @@ public class MissionSelect : MonoBehaviour
         }
         startButton.interactable = true;
     }
+
+    public void Locked()                                  // Card_3_Locked On Click
+    {
+        AudioManager.UI(UISound.Error);                   // error feedback
+        Tween.Punch(this, cards[2], 0.06f, 0.25f);        // small bump so the player sees it was heard
+    }
 }

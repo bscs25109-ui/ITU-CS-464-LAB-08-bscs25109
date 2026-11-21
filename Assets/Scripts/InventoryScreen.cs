@@ -50,9 +50,21 @@ public class InventoryScreen : MonoBehaviour
         }
     }
 
+    //public void Use()                                    // Btn_Use
+    //{
+    //    if (counts[selected] <= 0) return;
+    //    counts[selected]--;
+    //    countText.SetText("x{0}", counts[selected]);
+    //    slotCounts[selected].SetText("x{0}", counts[selected]);
+    //    Tween.Punch(this, countText.transform, 0.3f, 0.25f);          // the number that changed pulses
+    //    Tween.Punch(this, slotCounts[selected].transform, 0.3f, 0.25f);
+    //    RefreshUse();
+    //}
+
     public void Use()                                    // Btn_Use
     {
         if (counts[selected] <= 0) return;
+        AudioManager.UI(UISound.Success);                // NEW
         counts[selected]--;
         countText.SetText("x{0}", counts[selected]);
         slotCounts[selected].SetText("x{0}", counts[selected]);

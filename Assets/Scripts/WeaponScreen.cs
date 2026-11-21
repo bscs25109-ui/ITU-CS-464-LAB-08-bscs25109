@@ -73,10 +73,18 @@ public class WeaponScreen : MonoBehaviour
         }
     }
 
+    //public void Equip()                              // Btn_Equip
+    //{
+    //    GameSession.Weapon = pending;
+    //    equipText.text = "EQUIPPED";
+    //    Tween.Punch(this, equipText.transform, 0.2f, 0.25f);          // confirmation
+    //}
+
     public void Equip()                              // Btn_Equip
     {
+        AudioManager.UI(UISound.Success);            // NEW
         GameSession.Weapon = pending;
         equipText.text = "EQUIPPED";
-        Tween.Punch(this, equipText.transform, 0.2f, 0.25f);          // confirmation
+        Tween.Punch(this, equipText.transform, 0.2f, 0.25f);
     }
 }

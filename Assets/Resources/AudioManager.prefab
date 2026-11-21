@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &271674876251352939
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 839436696296673800}
+  - component: {fileID: 7253512142037645909}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &839436696296673800
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 271674876251352939}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 6, y: 1, z: 6}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7253512142037645909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 271674876251352939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c05c3f232864854c94e1313297704d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioManager
+  mixer: {fileID: 24100000, guid: a67a54016b49a644e98071c63654165b, type: 2}
+  musicMenu: {fileID: 8300000, guid: 2ec0b45c06f69d840aeb2721c9e5e958, type: 3}
+  musicGameplay: {fileID: 8300000, guid: 2f0bf4061951b544ab701dafc802a449, type: 3}
+  musicCombat: {fileID: 8300000, guid: 76a0c0f60cc22f74f83047710cec8f00, type: 3}
+  musicVictory: {fileID: 8300000, guid: be93f155310211448a3691eff471e82c, type: 3}
+  musicDefeat: {fileID: 8300000, guid: a139c7e49949c9641b78c5c4d43b9b65, type: 3}
+  uiHover: {fileID: 8300000, guid: ae9e96448af8df740bd09946794e0e5d, type: 3}
+  uiClick: {fileID: 8300000, guid: 85d660bd476014f41b9a5c09dfadbef6, type: 3}
+  uiBack: {fileID: 8300000, guid: fea904c54a10d964d85979b55baa9ec9, type: 3}
+  uiOpen: {fileID: 8300000, guid: 7972878a074bd064688ba76dc16f60e6, type: 3}
+  uiSuccess: {fileID: 8300000, guid: 3043e82b8c2d91d48b6acf82541479cb, type: 3}
+  uiError: {fileID: 8300000, guid: 16ba7cf533a5967449b38e39061d0787, type: 3}
+  uiPause: {fileID: 8300000, guid: e6401c67767992b43b7230b2e1b1e9c3, type: 3}
+  uiResume: {fileID: 8300000, guid: 093f56d3b40e54640828d922fd8bb4f4, type: 3}
+  sfxPickup: {fileID: 8300000, guid: ece0e11e6bd12854caf74c68b5c45110, type: 3}
+  sfxHeal: {fileID: 8300000, guid: 1a2ee927ed4cb0c4cb02f55e57ca0ac0, type: 3}
+  sfxDamage: {fileID: 8300000, guid: 76b9066ed77745745afc03c851a89ace, type: 3}
+  sfxAttack: {fileID: 8300000, guid: b873e717e6d2db240bc04b1b99e92507, type: 3}
+  sfxDeath: {fileID: 8300000, guid: 9e7da18b5882e1c4ba05d1d80aecf428, type: 3}
+  sfxWin: {fileID: 8300000, guid: 8d10b77e88b14194e80a590c0cf13511, type: 3}
+  pitchRange: 2
+  minVolume: 0.85
+  crossfadeSeconds: 1.5
