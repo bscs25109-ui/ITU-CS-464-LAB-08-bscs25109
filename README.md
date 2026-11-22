@@ -1,69 +1,50 @@
 # DEAD ZONE: OUTBREAK — Lab 08
-**ITU CS-464** | **Muhammad Abu bakar (BSCS25109)** 
 
-Built directly on top of my Lab 07 10-screen mobile UI project. All the old screens, navigation, tweens, and responsive layouts still work—Lab 08 adds an async loading screen, UI and gameplay audio, an Audio Mixer with saved volume controls, and a C# event system.
+**Name:** Abbas | **Roll No:** BSCS25109 | **Course:** ITU CS-464 | **Unity:** 6.3 LTS (6000.3.24f1)
 
-- **Demo Video:** [PASTE LINK HERE]
-- **Windows Build:** [PASTE RELEASE LINK HERE OR DELETE LINE]
+Built directly on top of my Lab 07 10-screen UI project. All old menus, tweens, and responsive layouts still work. Lab 08 adds async scene loading, UI/gameplay audio, an Audio Mixer with saved settings, and C# events.
+
+* **Demo Video:** [PASTE LINK HERE]
+* **Windows Build:** [PASTE RELEASE LINK HERE OR DELETE]
 
 ![Audio Mixer](docs/screenshots/audio-mixer.png)
 
----
-
 ## Setup & Controls
-1. Open the project in Unity Hub (**Add > Add project from disk**).
-2. Open `Assets/Scenes/MainMenu.unity` and hit **Play**.
-   - Scene order in Build Profiles: `MainMenu` (0), `Loading` (1), `Game` (2).
-3. **Controls:** `WASD` to move, `Space` (or **HIT**) to attack, `Esc` to pause.
-   - Test keys: `H` (damage), `J` (heal), `K` (collect scrap).
-
----
+1. Open in **Unity 6.3 LTS (6000.3.24f1)** via Unity Hub (**Add > Add project from disk**).
+2. Open `Assets/Scenes/MainMenu.unity` and press **Play** (Build order: `MainMenu`, `Loading`, `Game`).
+3. **Controls:** `WASD` move, `Space` / **HIT** attack, `Esc` pause. Test keys: `H` (damage), `J` (heal), `K` (collect).
 
 ## Loading Flow
-Hitting **START MISSION** (or **Restart**) calls `SceneLoader.Load("Game")`, which opens the `Loading` scene. `LoadingScreen` loads the game scene asynchronously with `allowSceneActivation = false` so the player can't enter early. The progress bar and percentage track real progress (`op.progress / 0.9f`), rotate through tips, and only activate the scene once it hits 100% and plays the **READY** sound.
+Clicking **START MISSION** or **TRY AGAIN** opens the `Loading` scene via `SceneLoader.Load("Game")`. `LoadingScreen` runs `LoadSceneAsync("Game")` with `allowSceneActivation = false` so the player can't enter early. Progress is calculated with `op.progress / 0.9f` for a real 0–100% bar, and the scene only activates after hitting 100% and playing the **READY** sound.
 
----
+## Audio & Mixer (`MainMixer`)
+* **Single Manager:** One `DontDestroyOnLoad` `AudioManager` (`Assets/Resources/AudioManager.prefab`) creates and routes all 8 `AudioSource` components in code—no button or gameplay object has its own `AudioSource`.
+* **Groups:** `Master` -> `Music` (2 sources), `SFX` (4 pooled sources), `UI` (2 sources).
+* **Exposed Params:** `MasterVolume`, `MusicVolume`, `SFXVolume`, `UIVolume`.
+* **Snapshots:** `Normal` and `Paused` (Unscaled Time).
+* **UI & SFX:** `UIButtonSoundInstaller` handles all button hover, click, back, open, success, and error sounds. `GameAudioListener` plays gameplay SFX (pickup, heal, damage, attack, death, win) with `PlayOneShot`, ±2 semitone random pitch, and slight volume variation.
 
-## Audio & Mixer Setup
-- **One `AudioManager`:** A `DontDestroyOnLoad` singleton loaded from `Assets/Resources/AudioManager.prefab`. It creates and routes all 8 `AudioSource` components in code (2 Music, 4 SFX, 2 UI). No buttons or gameplay objects have their own `AudioSource`.
-- **UI Sounds:** `UIButtonSoundInstaller` attaches a lightweight `UIButtonSound` to every button for hover, click, back/cancel, panel open, success, error (locked mission), and pause/resume—all routed to the **UI** group.
-- **Gameplay SFX:** `GameAudioListener` plays pickup, heal, damage, attack, death, and win sounds using `PlayOneShot` across 4 pooled SFX sources, with random pitch (±2 semitones) and volume (`0.85`–`1.0`) variation.
+## Volume Mapping & Saving
+* Sliders range from `0.0001` to `1.0` and convert to dB via `Mathf.Log10(value) * 20f` (avoids linear scaling and `Log10(0)`).
+* **Mute** sets `MasterVolume` to `-80 dB` while keeping slider values intact.
+* All settings save to `PlayerPrefs` and restore automatically on restart.
 
-**Mixer (`MainMixer`):** `Master` → `Music`, `SFX`, `UI`  
-**Exposed Parameters:** `MasterVolume`, `MusicVolume`, `SFXVolume`, `UIVolume`  
-**Snapshots:** `Normal` and `Paused` (Update Mode: Unscaled Time)
-
----
-
-## Volume Controls & Persistence
-- Sliders run from `0.0001` to `1.0` and convert to decibels using `Mathf.Log10(value) * 20f` (never linear, and safe from `Log10(0)`).
-- **Mute** drops `MasterVolume` to `-80 dB` without overwriting the slider values, so unmuting brings back the exact same mix.
-- All volumes and the mute toggle save to `PlayerPrefs` and reload automatically on restart.
-
----
-
-## Music Transitions & Pause Behavior
+## Music Transitions & Pause
 Two looping Music sources handle equal-power crossfades (`cos` / `sin`) on unscaled time:
-- **Menu → Gameplay:** `GameManager.GameStarted`
-- **Gameplay → Combat:** `Health.Damaged` when HP ≤ 40%
-- **Combat → Gameplay:** `Health.Healed` when HP > 60%
-- **Gameplay / Combat → Victory or Defeat:** `GameManager.GameWon` / `GameLost`
-- **Back to Menu:** `SceneMusic` on `MainMenu`
+* **Menu -> Gameplay:** `GameManager.GameStarted`
+* **Gameplay <-> Combat:** HP ≤ 40% (`Health.Damaged`) / HP > 60% (`Health.Healed`)
+* **Win / Lose:** `GameManager.GameWon` / `GameLost`
+* **Back to Menu:** `SceneMusic` on `MainMenu`
 
-**While Paused:**
-- **SFX:** Paused via `AudioListener.pause = true`.
-- **Music:** Keeps playing (`ignoreListenerPause = true`), muffled using the `Paused` snapshot (Low-Pass 900 Hz, -8 dB) over 0.3s.
-- **UI Sounds:** Keep playing (`ignoreListenerPause = true`) so pause menus still have feedback.
-
----
+**While Paused:** Gameplay SFX pause (`AudioListener.pause = true`), Music stays on (`ignoreListenerPause = true`) but muffles via the `Paused` snapshot (Low-Pass 900 Hz, -8 dB), and UI sounds keep playing.
 
 ## C# Events
-Gameplay systems raise C# events instead of directly calling UI, audio, or VFX scripts. All listeners subscribe in `OnEnable` (`+=`), unsubscribe in `OnDisable` (`-=`), and publishers invoke with `?.Invoke(...)`.
+Gameplay scripts fire C# events instead of calling UI, audio, or VFX directly. All listeners use `+=` in `OnEnable`, `-=` in `OnDisable`, and publishers use `?.Invoke(...)`.
 
 | Publisher | Event | Listeners |
 |---|---|---|
-| `Health` | `Damaged(current, max)` | `HudListener`, `ShakeOnHit`, `GameAudioListener`, `ParticleFeedback`, `HitFlash` |
-| `Health` | `Healed(current, max)` | `HudListener`, `GameAudioListener`, `ParticleFeedback` |
+| `Health` | `Damaged(cur, max)` | `HudListener`, `ShakeOnHit`, `GameAudioListener`, `ParticleFeedback`, `HitFlash` |
+| `Health` | `Healed(cur, max)` | `HudListener`, `GameAudioListener`, `ParticleFeedback` |
 | `Health` | `Died` | `GameManager`, `GameAudioListener` |
 | `GameManager` | `GameStarted` | `HudListener`, `GameAudioListener` |
 | `GameManager` | `Collected(score, target)` | `HudListener`, `GameAudioListener`, `ParticleFeedback` |
@@ -71,7 +52,6 @@ Gameplay systems raise C# events instead of directly calling UI, audio, or VFX s
 | `PlayerAttack` | `Attacked` | `GameAudioListener` |
 | `GameUI` | `StateChanged(state)` | `PauseAudio` |
 
-### Code Excerpt
 ```csharp
 // Publisher: Health.cs
 public event Action<int, int> Damaged;
@@ -84,7 +64,6 @@ public void TakeDamage(int amount)
 
     Damaged?.Invoke(current, max);
     GameEvents.RaisePlayerDamaged(current, max);
-
     if (current <= 0) Died?.Invoke();
 }
 
