@@ -1,6 +1,6 @@
 # DEAD ZONE: OUTBREAK — Lab 08
 
-**Name:** Abbas | **Roll No:** BSCS25109 | **Course:** ITU CS-464 | **Unity:** 6.3 LTS (6000.3.24f1)
+**Name:** Muhammad Abu Bakar | **Roll No:** BSCS25109 | **Course:** ITU CS-464 
 
 Built directly on top of my Lab 07 10-screen UI project. All old menus, tweens, and responsive layouts still work. Lab 08 adds async scene loading, UI/gameplay audio, an Audio Mixer with saved settings, and C# events.
 
@@ -10,7 +10,7 @@ Built directly on top of my Lab 07 10-screen UI project. All old menus, tweens, 
 ![Audio Mixer](docs/screenshots/audio-mixer.png)
 
 ## Setup & Controls
-1. Open in **Unity 6.3 LTS (6000.3.24f1)** via Unity Hub (**Add > Add project from disk**).
+1. In  Unity Hub (**Add > Add project from disk**).
 2. Open `Assets/Scenes/MainMenu.unity` and press **Play** (Build order: `MainMenu`, `Loading`, `Game`).
 3. **Controls:** `WASD` move, `Space` / **HIT** attack, `Esc` pause. Test keys: `H` (damage), `J` (heal), `K` (collect).
 
