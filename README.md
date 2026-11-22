@@ -4,7 +4,7 @@
 
 Built directly on top of my Lab 07 10-screen UI project. All old menus, tweens, and responsive layouts still work. Lab 08 adds async scene loading, UI/gameplay audio, an Audio Mixer with saved settings, and C# events.
 
-* **Demo Video:** [PASTE LINK HERE]
+* **Demo Video:** https://drive.google.com/file/d/1if00LJ7J3OQ3NErMLqlHmHAdujRI7kMG/view?usp=sharing
 * **Windows Build:** https://github.com/bscs25109-ui/ITU-CS-464-LAB-08-bscs25109/releases/tag/v1.0
 
 ![Audio Mixer](docs/screenshots/audio-mixer.png)
